@@ -20,19 +20,27 @@ PORT = int(os.getenv('PORT', 5000))
 API_KEY = os.getenv('API_KEY')
 BASE_URL = os.getenv('BASE_URL', 'http://localhost:5000')
 
-# Handle Google credentials from environment variable
+# Handle Google credentials from environment variable# Handle Google credentials from environment variable
 credentials_json = os.getenv('GOOGLE_CREDENTIALS_JSON')
 if credentials_json:
-    # Create a temporary credentials file
-    temp_credentials_path = '/tmp/temp_credentials.json'
-    with open(temp_credentials_path, 'w') as f:
-        f.write(credentials_json)
-    
-    # Set the path to the credentials file
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = temp_credentials_path
+    try:
+        # Ensure the JSON string is properly formatted
+        credentials_json = credentials_json.replace('\\n', '\n')
+        
+        # Create a temporary credentials file
+        temp_credentials_path = '/tmp/temp_credentials.json'
+        with open(temp_credentials_path, 'w') as f:
+            f.write(credentials_json)
+        
+        # Set the path to the credentials file
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = temp_credentials_path
+        print("Credentials file created successfully.")
+    except Exception as e:
+        print(f"Error processing GOOGLE_CREDENTIALS_JSON: {e}")
 else:
-    # Fall back to the file path if JSON content isn't provided
+    print("GOOGLE_CREDENTIALS_JSON not found, using fallback path.")
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getenv('GOOGLE_APPLICATION_CREDENTIALS', 'rakamin--kf--analytics-9ae44db8ef2f.json')
+
 
 # Initialize Earth Engine
 try:
