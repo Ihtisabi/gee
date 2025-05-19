@@ -5,3 +5,4 @@ gunicorn
 pandas
 matplotlib
 requests
+python-dotenv
