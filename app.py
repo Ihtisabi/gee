@@ -55,13 +55,6 @@ else:
     except Exception as e:
         logger.error(f"Error initializing Earth Engine: {e}")
 
-# Initialize Earth Engine
-try:
-    ee.Initialize(project="rakamin--kf--analytics")
-    print("Earth Engine initialized successfully")
-except Exception as e:
-    print(f"Error initializing Earth Engine: {e}")
-
 # Optional: API key middleware
 def require_api_key(f):
     @wraps(f)
