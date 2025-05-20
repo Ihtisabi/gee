@@ -292,8 +292,8 @@ def home():
         'name': 'Jabodetabek Climate Data API',
         'description': 'API for climate and flood prediction data for the Greater Jakarta area',
         'endpoints': [
-            f'{host_url}/api/data/<year>/<month>',
-            f'{host_url}/api/data/<year>',
+            f'{host_url}/api/data/{{year}}/{{month}}',
+            f'{host_url}/api/data/{{year}}',
             f'{host_url}/debug'
         ],
         'status': 'online',
