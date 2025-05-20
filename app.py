@@ -1,4 +1,6 @@
 import os
+import sys
+import logging
 import ee
 import json
 import flask
@@ -7,6 +9,14 @@ from flask_cors import CORS
 from datetime import datetime
 from dotenv import load_dotenv
 from functools import wraps
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
@@ -20,27 +30,30 @@ PORT = int(os.getenv('PORT', 5000))
 API_KEY = os.getenv('API_KEY')
 BASE_URL = os.getenv('BASE_URL', 'http://localhost:5000')
 
-# Handle Google credentials from environment variable# Handle Google credentials from environment variable
+# Handle Google credentials from environment variable
 credentials_json = os.getenv('GOOGLE_CREDENTIALS_JSON')
 if credentials_json:
     try:
-        # Ensure the JSON string is properly formatted
-        credentials_json = credentials_json.replace('\\n', '\n')
-        
-        # Create a temporary credentials file
-        temp_credentials_path = '/tmp/temp_credentials.json'
-        with open(temp_credentials_path, 'w') as f:
-            f.write(credentials_json)
-        
-        # Set the path to the credentials file
-        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = temp_credentials_path
-        print("Credentials file created successfully.")
+        # Parse the credentials JSON string to a dictionary
+        credentials_dict = json.loads(credentials_json)
+        # Initialize with service account
+        credentials = ee.ServiceAccountCredentials(
+            credentials_dict['client_email'], 
+            key_data=credentials_dict['private_key']
+        )
+        ee.Initialize(credentials, project="rakamin--kf--analytics")
+        logger.info("Earth Engine initialized successfully with service account")
     except Exception as e:
-        print(f"Error processing GOOGLE_CREDENTIALS_JSON: {e}")
+        logger.error(f"Error initializing Earth Engine: {e}")
 else:
-    print("GOOGLE_CREDENTIALS_JSON not found, using fallback path.")
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getenv('GOOGLE_APPLICATION_CREDENTIALS', 'rakamin--kf--analytics-9ae44db8ef2f.json')
-
+    # Fallback to the default authentication method
+    try:
+        logger.info("GOOGLE_CREDENTIALS_JSON not found, using fallback credentials")
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getenv('GOOGLE_APPLICATION_CREDENTIALS', 'rakamin--kf--analytics-9ae44db8ef2f.json')
+        ee.Initialize(project="rakamin--kf--analytics")
+        logger.info("Earth Engine initialized with default credentials")
+    except Exception as e:
+        logger.error(f"Error initializing Earth Engine: {e}")
 
 # Initialize Earth Engine
 try:
@@ -265,7 +278,20 @@ def extract_data_for_month(year, month):
     
     return result
 
-# API Routes
+# Add a debug endpoint
+@app.route('/debug')
+def debug():
+    """Return diagnostic information about the environment"""
+    return jsonify({
+        'env_vars': {k: v for k, v in os.environ.items() 
+                    if not k.startswith('GOOGLE_') and k != 'API_KEY'},
+        'port': PORT,
+        'base_url': BASE_URL,
+        'has_credentials': credentials_json is not None,
+        'earth_engine_initialized': ee.data._initialized
+    })
+
+# Modify home route to display more info
 @app.route('/')
 def home():
     return jsonify({
@@ -273,9 +299,11 @@ def home():
         'description': 'API for climate and flood prediction data for the Greater Jakarta area',
         'endpoints': [
             f'{BASE_URL}/api/data/<year>/<month>',
-            f'{BASE_URL}/api/data/<year>'
+            f'{BASE_URL}/api/data/<year>',
+            f'{BASE_URL}/debug'
         ],
-        'status': 'online'
+        'status': 'online',
+        'ee_status': 'initialized' if ee.data._initialized else 'not initialized'
     })
 
 @app.route('/api/data/<year>/<month>')
@@ -359,4 +387,5 @@ def server_error(e):
 # Main entry point
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
+    logger.info(f"Starting application on port {port}")
     app.run(host='0.0.0.0', port=port, debug=(os.getenv('FLASK_DEBUG', 'False').lower() == 'true'))
