@@ -287,13 +287,14 @@ def debug():
 # Modify home route to display more info
 @app.route('/')
 def home():
+    host_url = request.host_url.rstrip('/')
     return jsonify({
         'name': 'Jabodetabek Climate Data API',
         'description': 'API for climate and flood prediction data for the Greater Jakarta area',
         'endpoints': [
-            f'{BASE_URL}/api/data/<year>/<month>',
-            f'{BASE_URL}/api/data/<year>',
-            f'{BASE_URL}/debug'
+            f'{host_url}/api/data/<year>/<month>',
+            f'{host_url}/api/data/<year>',
+            f'{host_url}/debug'
         ],
         'status': 'online',
         'ee_status': 'initialized' if ee.data._initialized else 'not initialized'
