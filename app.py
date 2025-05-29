@@ -598,7 +598,7 @@ def extract_data_for_month(year, month, longitude=None, latitude=None):
         name_2 = props.get('NAME_2', '')
         name_3 = props.get('NAME_3', '')
         
-        name_3_cleaned = name_3.lower().strip()
+        name_3_cleaned = name_3.lower().strip().replace(" ", "")
         
         # Get flood data for this kabupaten, year, and month
         flood_status = get_flood_data(int(year), month_num, name_2)
