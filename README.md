@@ -26,6 +26,7 @@ Make sure to install required packages:
 
 ```bash
 pip install -r requirements.txt
+```
 
 ---
 
@@ -42,9 +43,11 @@ Use it to fetch flood event data by date and region.
 - Retrieve tabular geospatial data (climate, vegetation, elevation, etc.) for a specific location and month.
 ```bash
 http://gee.up.railway.app/api/data/{year}/{month}?longitude={lng}&latitude={lat}
+```
 - Generate satellite-based image for a location and year.
 ```bash
 http://gee.up.railway.app/api/imagery/{year}?longitude={lng}&latitude={lat}
+```
 
 Example request:
 ```bash
