@@ -1,7 +1,8 @@
 # 🌊 GEE Data Extraction for Flood Prediction
 
-This repository contains Python scripts for accessing and processing geospatial datasets from **Google Earth Engine (GEE)** — for satellite-based environmental data  
-- 🧭 **BNPB Open API** — for historical disaster records in Indonesia.  
+This repository contains Python scripts for accessing and processing geospatial datasets from: 
+- **Google Earth Engine (GEE)** — for satellite-based environmental data  
+- **BNPB Open API** — for historical disaster records in Indonesia.  
 The code was developed as part of an exploratory study to support **flood prediction modeling**.
 
 ---
