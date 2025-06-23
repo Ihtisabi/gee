@@ -53,4 +53,16 @@ Example request:
 ```bash
 curl http://gee.up.railway.app/api/data/2024/5?longitude=106.8456&latitude=-6.2088
 curl http://gee.up.railway.app/api/imagery/2024?longitude=106.8456&latitude=-6.2088
+```
 
+---
+
+## 🧩 Project Affiliation
+
+This repository is part of **FloodSight** — a geospatial flood prediction system developed by  
+**Tim CC25-CF096** at **Coding Camp 2025**.
+
+🔗 GitHub Org: [github.com/FloodSight](https://github.com/FloodSight)  
+🌐 Frontend App: [fe-flood-sight.vercel.app](https://fe-flood-sight.vercel.app/)
+
+This service provides **environmental feature extraction and flood history data**, which are used as **input for machine learning models** in the FloodSight platform.
