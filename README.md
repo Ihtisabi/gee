@@ -34,7 +34,7 @@ pip install -r requirements.txt
 
 This project includes a live deployment of the data access API.
 
-> 🔗 [https://gee.up.railway.app/](https://gee.up.railway.app/)
+> 🔗 [http://suciihtisabi-datafloodsight.hf.space/](http://suciihtisabi-datafloodsight.hf.space/)
 
 Use it to fetch flood event data by date and region.  
 (*Note: Free-tier deployment — may sleep or be rate-limited.*)
